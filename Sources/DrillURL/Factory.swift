@@ -49,3 +49,14 @@ extension DrillClient {
         
     }
 }
+
+struct QueryEncoder {
+    func encode<E: Encodable>(_ object: E) throws -> [URLQueryItem] {
+        let data = try JSONEncoder().encode(object)
+        let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+        guard let dictionary = jsonObject as? [String: Any] else {
+            throw ClientError.encode(E.self)
+        }
+        return dictionary.map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
+    }
+}
