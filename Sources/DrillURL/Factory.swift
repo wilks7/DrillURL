@@ -12,8 +12,11 @@ extension DrillClient {
         }
         return url
     }
+}
+
+extension DrillClient {
     
-    func createURL<T:Encodable>(with object: T, endpoint: String) throws -> URL {
+    func createURLEndpoint<T:Encodable>(with object: T, endpoint: String) throws -> URL {
         
         let endpoint = baseURL + endpoint
         guard var components = URLComponents(string: endpoint) else {
