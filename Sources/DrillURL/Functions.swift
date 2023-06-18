@@ -9,6 +9,11 @@ import Foundation
 
 public extension DrillClient {
     
+    func fetch<T:Decodable>(endpoint: String) async throws -> T {
+        let url = try createURL(with: endpoint)
+        return try await request(url: url)
+    }
+    
     func fetch<T:Decodable>(url: URL) async throws -> T {
         return try await request(url: url)
     }
