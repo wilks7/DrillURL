@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum ClientError: Swift.Error{
+public enum ClientError: Swift.Error{
     case encode(Encodable.Type)
     case decode(Decodable.Type)
     case statusCode(Int, String)
     case message(String)
     case endpoint(String)
     
-    var message: String {
+    public var message: String {
         switch self {
         case .decode(let decodable):
             let object = String(describing: decodable)
