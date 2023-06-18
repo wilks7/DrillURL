@@ -7,6 +7,6 @@
 
 import Foundation
 
-public enum LogLevel: String {
-    case error, response, request, both, none, all
+public enum LogLevel: String, CaseIterable {
+    case error, response, request
 }

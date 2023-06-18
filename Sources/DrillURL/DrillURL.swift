@@ -3,27 +3,28 @@ import Foundation
 import os.log
 import OSLog
 
-protocol Client {
-    func makeRequest(for url: URL) -> URLRequest
-    var session: URLSession {get}
+protocol DrillClient {
     var baseURL: String {get}
+    func makeRequest(for url: URL) -> URLRequest
+    
+    var session: URLSession {get}
     var networkLogger: Logger { get }
     var log_level: [LogLevel] {get}
 
 }
-extension Client {
-    
-    var logger: Logger {
+extension DrillClient {
+    var log_level: [LogLevel] { [.error, .request, .response] }
+    var session: URLSession { URLSession.shared }
+
+    var networkLogger: Logger {
         Logger(subsystem: "package.DrillURL.Client", category: "Networking")
+    }
+    var logger: Logger {
+        networkLogger
     }
     
     func fetch<T:Decodable>(endpoint: String) async throws -> T {
-        guard let url = URL(string: baseURL + endpoint) else {
-            if log_level.contains(.error) {
-                logger.error("Endpoint \(endpoint) couldn't cast to URL")
-            }
-            throw ClientError.endpoint(baseURL+endpoint)
-        }
+        let url = try createURL(with: endpoint)
         return try await request(url: url)
     }
     
@@ -33,44 +34,8 @@ extension Client {
     }
 }
 
-extension Client {
-    var session: URLSession { URLSession.shared }
-    
-    private func createURL<T:Encodable>(with object: T, endpoint: String) throws -> URL {
-        
-        let endpoint = baseURL + endpoint
-        guard var components = URLComponents(string: endpoint) else {
-            if log_level.contains(.error) {
-                logger.error("URL Components \(endpoint) couldn't cast to URL")
-            }
-            throw ClientError.endpoint(endpoint)
-        }
-        
-        let queryParameters: [URLQueryItem]
-        do {
-            queryParameters = try QueryEncoder().encode(object)
-        } catch {
-            if log_level.contains(.error) {
-                logger.error("QueryEncoder couldn't encode parameters for \(String(describing: T.self))")
-            }
-            throw error
-        }
-        
-        components.queryItems = queryParameters
-            .filter { $0.value != "" }
-        
-        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
-        
-        if let url = components.url {
-            return url
-        } else {
-            if log_level.contains(.error) {
-                logger.error("URL Components \(endpoint) couldn't cast to URL")
-            }
-            throw ClientError.endpoint(endpoint)
-        }
-        
-    }
+extension DrillClient {
+
 
     private func request<T: Decodable>(url: URL) async throws -> T {
         let request = makeRequest(for: url)
