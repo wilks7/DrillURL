@@ -38,7 +38,7 @@ extension DrillClient {
             json(print: data)
         }
         do {
-            let object: T = try JSONDecoder().decode(T.self, from: data)
+            let object: T = try decode(data: data)
             return object
         } catch {
             if log_level.contains(.error) {
