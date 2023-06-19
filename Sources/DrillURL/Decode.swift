@@ -17,10 +17,9 @@ extension DrillClient {
             let dateFormatter = DateFormatter()
 //            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
     
-            let dateFormats = ["yyyy-MM-dd", "MM/dd/yyyy", "yyyyMMdd"]
 
-            for dateFormat in dateFormats {
-                dateFormatter.dateFormat = dateFormat
+            for dateFormat in DateFormats.allCases {
+                dateFormatter.dateFormat = dateFormat.rawValue
                 if let date = dateFormatter.date(from: dateStr) {
                     return date
                 }
@@ -33,4 +32,11 @@ extension DrillClient {
         return try decoder.decode(T.self, from: data)
     }
 
+}
+
+internal enum DateFormats: String, CaseIterable, Identifiable {
+    var id: String {self.rawValue}
+    case day = "yyyy-MM-dd"
+    case month = "yyyy-MM"
+    case year = "yyyy"
 }
