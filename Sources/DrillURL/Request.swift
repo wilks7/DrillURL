@@ -38,8 +38,7 @@ extension DrillClient {
             json(print: data)
         }
         do {
-            let object: T = try decode(data: data)
-            return object
+            return try decode(data: data)
         } catch {
             if log_level.contains(.error) {
                 logger.error("Decode error for \(String(describing: T.self))")
@@ -47,6 +46,7 @@ extension DrillClient {
             }
             throw ClientError.decode(T.self)
         }
+
     }
     
     private func json(print data: Data) {

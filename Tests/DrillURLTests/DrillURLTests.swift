@@ -33,11 +33,21 @@ final class DrillURLTests: XCTestCase {
             let page: Int
             let artist: [Artist]
         }
+        
+        struct Setlist: Decodable {
+            let id: String
+            var eventDate: Date
+        }
+        
+        struct SetlistResult: DecodableDate {
+            static let dateFormat = "dd-MM-yyyy"
+            let setlist: [Setlist]
+        }
     }
     
     let client = Client()
     
-    func testEndpoint() async {
+    func testArtist() async {
         do {
             let phish = "e01646f2-2a04-450d-8bf2-0d993082e058"
             let endpoint = "artist/\(phish)"
@@ -47,6 +57,18 @@ final class DrillURLTests: XCTestCase {
         } catch {
             XCTFail("Failed to fetch artist: \(error)")
         }
+    }
+    
+    /// Fetches an Artist's Setlist from the SetlistFM API and checks its validity.
+    func testSetlist() async throws  {
+        let phish = "e01646f2-2a04-450d-8bf2-0d993082e058"
+
+        let endpoint = "artist/\(phish)/setlists?p=\(1)"
+        let url = URL(string: client.baseURL + endpoint)!
+        
+        let result: Client.SetlistResult = try await Client().fetch(url: url)
+        let setlists = result.setlist
+        XCTAssert(setlists.count > 0)
     }
     
     func testRequest() async {
