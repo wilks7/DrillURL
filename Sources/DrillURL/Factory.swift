@@ -3,7 +3,7 @@ import Foundation
 
 extension DrillClient {
     
-    func createURL(with endpoint: String) throws -> URL {
+    public func createURL(with endpoint: String) throws -> URL {
         guard let url = URL(string: baseURL + endpoint) else {
             if log_level.contains(.error) {
                 logger.error("Endpoint \(endpoint) couldn't cast to URL")
