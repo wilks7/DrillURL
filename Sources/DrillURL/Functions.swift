@@ -9,6 +9,9 @@ import Foundation
 
 public extension DrillClient {
     
+    
+    /// This function takes an endpoint string and returns a URL by appending the endpoint to the base URL.
+    
     func fetch<T:Decodable>(endpoint: String) async throws -> T {
         let url = try createURL(with: endpoint)
         return try await request(url: url)

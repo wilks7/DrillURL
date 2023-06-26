@@ -12,7 +12,7 @@ public protocol DecodableDate: Decodable {
 }
 
 extension DrillClient {
-    func decode<T: Decodable>(data: Data) throws -> T {
+    public static func decode<T: Decodable>(data: Data) throws -> T {
         let decoder = JSONDecoder()
         guard let type = T.self as? DecodableDate.Type else {
             return try decoder.decode(T.self, from: data)

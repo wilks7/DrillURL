@@ -19,6 +19,7 @@ public protocol DateValueStrategy {
 
     // For optional Date
     public init(wrappedValue: Date?) {
+        
         self.wrappedValue = wrappedValue
         self.value = wrappedValue == nil ? nil : T.encode(wrappedValue!)
     }
