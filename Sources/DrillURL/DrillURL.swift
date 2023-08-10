@@ -1,6 +1,6 @@
 
 import Foundation
-import os.log
+//import os.log
 import OSLog
 
 public protocol DrillClient {
